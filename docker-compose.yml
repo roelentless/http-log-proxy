@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+  proxy:
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    ports:
+      - 9000:9000
+    environment:
+      TARGET: http://hello:3000
+      OUTPUT: tcp:tcp:3001
+      RES_DECODE_JSON: 'true'
+  
+  hello:
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    ports:
+      - 3000:3000
+    command: node hello-service.js
+
+  tcp:
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    ports:
+      - 3001:3001
+    command: node tcp-service.js
+  
+  ab:
+    image: russmckendrick/ab
