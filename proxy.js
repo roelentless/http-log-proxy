@@ -36,6 +36,9 @@ function serializeBody(
 ) {
   let returnBody;
   if (optionalBodyBuffer) {
+    if(/^text.*/.test(requestType)) {
+      requestType = 'TEXT';
+    }
     switch (requestType) {
       case 'application/json':
         if (decodeJSON) {
@@ -46,7 +49,7 @@ function serializeBody(
             console.error('Could not decode body JSON', optionalBodyBuffer);
           }
         }
-      case /text\/.*/.test(requestType):
+      case 'TEXT':
       case 'application/xml':
         returnBody = optionalBodyBuffer.toString();
         break;
