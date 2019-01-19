@@ -20,6 +20,7 @@
     "stream-buffers": "^3.0.2"
   },
   "devDependencies": {
+    "express": "^4.16.4",
     "prettier": "^1.15.3"
   }
 }
