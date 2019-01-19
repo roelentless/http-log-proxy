@@ -22,36 +22,38 @@ You can now send requests to 127.0.0.1:9000 and see request/response log output.
 #### Example output for `curl 127.0.0.1:9000` with PRETTY=true:
 ````
 {
-    "@timestamp": "2019-01-19T12:09:06.221Z",
-    "request": {
-        "headers": {
-            "host": "127.0.0.1:9000",
-            "user-agent": "curl/7.54.0",
-            "accept": "*/*"
-        },
-        "httpVersion": "1.1",
-        "url": "/",
-        "upgrade": false,
-        "method": "GET"
+  "@timestamp": "2019-01-19T19:45:28.965Z",
+  "request": {
+    "headers": {
+      "host": "127.0.0.1:9000",
+      "user-agent": "curl/7.54.0",
+      "accept": "*/*"
     },
-    "response": {
-        "headers": {
-            "date": "Sat, 19 Jan 2019 12:09:06 GMT",
-            "content-type": "text/plain; charset=utf-8",
-            "content-length": "15",
-            "connection": "close",
-            "set-cookie": [
-                "__cfduid=d1058c17750df36c40438e536d96e49e2831547899746; expires=Sun, 19-Jan-20 12:09:06 GMT; path=/; domain=.ifconfig.co; HttpOnly"
-            ],
-            "via": "1.1 vegur",
-            "expect-ct": "max-age=604800, report-uri=\"https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct\"",
-            "server": "cloudflare",
-            "cf-ray": "49b930c5df7d0dbf4d-AMS"
-        },
-        "httpVersion": "1.1",
-        "statusCode": 200,
-        "statusMessage": "OK"
-    }
+    "httpVersion": "1.1",
+    "url": "/",
+    "upgrade": false,
+    "method": "GET"
+  },
+  "response": {
+    "headers": {
+      "date": "Sat, 19 Jan 2019 19:45:28 GMT",
+      "content-type": "text/plain; charset=utf-8",
+      "content-length": "15",
+      "connection": "close",
+      "set-cookie": [
+        "__cfduid=d3ef70f7ade076b2c8dje5327371a77ad1547927128; expires=Sun, 19-Jan-20 19:45:28 GMT; path=/; domain=.ifconfig.co; HttpOnly"
+      ],
+      "via": "1.1 vegur",
+      "expect-ct": "max-age=604800, report-uri=\"https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct\"",
+      "server": "cloudflare",
+      "cf-ray": "49bbdieu580ec77b-AMS"
+    },
+    "httpVersion": "1.1",
+    "statusCode": 200,
+    "statusMessage": "OK",
+    "bodyLength": 15,
+    "body": "92.217.134.121\n"
+  }
 }
 ````
 
@@ -63,7 +65,7 @@ You can now send requests to 127.0.0.1:9000 and see request/response log output.
 | TARGET                 | Set to URL you want to forward requests to. HTTP or HTTPS. Required.              |
 | PORT                   | Port for the service to listen on. Default: `9000`                                |
 | MAX_BODY_SIZE          | Max body size. Default: `50mb`                                                    |
-| DISABLE_LOG            | Disable logging to leverage proxy capabilities only.                              | 
+| DISABLE_LOG            | Disable logging to leverage proxy capabilities only. Default: `false`             | 
 | OUTPUT                 | Output channel to write json to. Default: `stdout`.                               |
 
 #### Possible OUTPUT configs
