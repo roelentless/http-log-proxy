@@ -301,6 +301,7 @@ app.use(function(req, res) {
 const server = http.createServer(app);
 server.listen(port, () => {
   debug(`Proxy service listening on 0.0.0.0:${port}`);
+  debug(`Proxying requests to: ${process.env.TARGET}`);
 });
 
 // Abort handler
