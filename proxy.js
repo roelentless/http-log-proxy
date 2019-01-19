@@ -1,7 +1,7 @@
 const http = require('http');
 const httpProxy = require('http-proxy');
 const { pick, isNumber } = require('lodash');
-// const util = require('util');
+const util = require('util');
 const connect = require('connect');
 const bodyParser = require('body-parser');
 const streamBuffers = require('stream-buffers');
@@ -11,6 +11,8 @@ const Stream = require('stream');
 const fs = require('fs-extra');
 const dfs = require('date-fns');
 const path = require('path');
+const zlib = require('zlib');
+const brotli = require('brotli');
 
 // Config
 const port = parseInt(process.env.PORT) || 9000;
@@ -28,18 +30,37 @@ function debug(msg) {
   console.error(new Date().toISOString() + ' :: ' + msg);
 }
 
-function serializeBody(
+const pGunzip = util.promisify(zlib.gunzip);
+const pInflate = util.promisify(zlib.inflate);
+
+async function decompressBody(contentEncoding, body) {
+  if (contentEncoding === 'gzip') {
+    body = await pGunzip(body);
+  } else if (contentEncoding === 'deflate') {
+    body = await pInflate(body);
+  } else if (contentEncoding === 'br') {
+    body = brotli.decompress(body);
+  }
+  return body;
+}
+
+async function serializeBody(
   optionalBodyBuffer,
-  requestType,
+  contentType,
+  contentEncoding,
   decodeJSON,
   binaryBodyB64
 ) {
   let returnBody;
   if (optionalBodyBuffer) {
-    if(/^text.*/.test(requestType)) {
-      requestType = 'TEXT';
+    optionalBodyBuffer = await decompressBody(
+      contentEncoding,
+      optionalBodyBuffer
+    );
+    if (/^text.*/.test(contentType)) {
+      contentType = 'TEXT';
     }
-    switch (requestType) {
+    switch (contentType) {
       case 'application/json':
         if (decodeJSON) {
           try {
@@ -62,14 +83,15 @@ function serializeBody(
   return returnBody;
 }
 
-function toLogRequest(req) {
+async function toLogRequest(req) {
   let type;
   try {
     type = contentType.parse(req).type;
   } catch (e) {}
-  let body = serializeBody(
+  let body = await serializeBody(
     req.body,
     type,
+    req.headers['content-encoding'],
     process.env.REQ_DECODE_JSON === 'true',
     process.env.REQ_BINARY_BODY_B64 === 'true'
   );
@@ -83,7 +105,7 @@ function toLogRequest(req) {
   return l;
 }
 
-function toLogResponse(res) {
+async function toLogResponse(res) {
   let l = {
     ...pick(res, [
       'headers',
@@ -98,9 +120,10 @@ function toLogResponse(res) {
   try {
     type = contentType.parse(res).type;
   } catch (e) {}
-  let body = serializeBody(
+  let body = await serializeBody(
     res.rawBody,
     type,
+    res.headers['content-encoding'],
     process.env.RES_DECODE_JSON === 'true',
     process.env.RES_BINARY_BODY_B64 === 'true'
   );
@@ -112,11 +135,11 @@ function toLogResponse(res) {
   return l;
 }
 
-function logRequestWithResponse(req, res) {
+async function logRequestWithResponse(req, res) {
   const logMsg = {
     '@timestamp': new Date().toISOString(),
-    request: toLogRequest(req),
-    response: toLogResponse(res),
+    request: await toLogRequest(req),
+    response: await toLogResponse(res),
   };
   output(logMsg);
 }
@@ -247,7 +270,8 @@ if (process.env.DISABLE_LOG !== 'true') {
     proxyRes.on('data', c => d.push(c));
     proxyRes.on('end', () => {
       proxyRes.rawBody = Buffer.concat(d);
-      logRequestWithResponse(req, proxyRes);
+      // Best effort logging, we don't wait on the response.
+      logRequestWithResponse(req, proxyRes).catch(err => console.error(err));
     });
   });
 }
