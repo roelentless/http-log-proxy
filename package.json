@@ -19,5 +19,7 @@
     "net-socket-reconnect": "0.0.9",
     "stream-buffers": "^3.0.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "prettier": "^1.15.3"
+  }
 }
