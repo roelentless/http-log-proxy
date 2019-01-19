@@ -65,7 +65,7 @@ You can now send requests to 127.0.0.1:9000 and see request/response log output.
 | TARGET                 | Set to URL you want to forward requests to. HTTP or HTTPS. Required.              |
 | PORT                   | Port for the service to listen on. Default: `9000`                                |
 | MAX_BODY_SIZE          | Max body size. Default: `50mb`                                                    |
-| DISABLE_LOG            | Disable logging to leverage proxy capabilities only.                              | 
+| DISABLE_LOG            | Disable logging to leverage proxy capabilities only. Default: `false`             | 
 | OUTPUT                 | Output channel to write json to. Default: `stdout`.                               |
 
 #### Possible OUTPUT configs
