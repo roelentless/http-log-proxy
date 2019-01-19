@@ -12,7 +12,6 @@ const fs = require('fs-extra');
 const dfs = require('date-fns');
 const path = require('path');
 const zlib = require('zlib');
-const brotli = require('brotli');
 
 // Config
 const port = parseInt(process.env.PORT) || 9000;
@@ -38,8 +37,6 @@ async function decompressBody(contentEncoding, body) {
     body = await pGunzip(body);
   } else if (contentEncoding === 'deflate') {
     body = await pInflate(body);
-  } else if (contentEncoding === 'br') {
-    body = brotli.decompress(body);
   }
   return body;
 }
