@@ -1,11 +1,13 @@
 # http-log-proxy
-Simple proxy service which logs requests/responses as clean json.   
+Simple proxy service which logs request/response objects in detail as clean json.   
 
 -  Useful for intercepting traffic and debug requests if you can remap the DNS
 -  Service tries to leave original requests & responses unchanged
 -  Supports HTTP/HTTPS target endpoints
--  Clean logging for text, json and binary content
--  Performance: does around 1000 small-request/s on a 2,8 GHz Intel Core i5 2015 single thread, peaks at 75MB ram
+-  Clean logging for text, json and binary body content
+-  Can output to console/stdout, file or tcp socket
+
+Performance: does around 1000 requests/s on a 2,8 GHz Intel Core i5 single thread, peaks at 75MB ram. Response body < 1kb.
 
 ### Usage
 ```
