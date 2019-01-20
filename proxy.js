@@ -255,6 +255,10 @@ const proxy = httpProxy.createProxyServer({
   autoRewrite: true,
   proxyTimeout: 300000,
   followRedirects: true,
+  hostRewrite: true,
+  protocolRewrite: true,
+  cookieDomainRewrite: true,
+  cookiePathRewrite: true,
 });
 
 proxy.on('error', function(e) {
